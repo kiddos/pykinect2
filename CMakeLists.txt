@@ -51,3 +51,5 @@ endif ()
 
 # test scripts
 file(COPY test/test_kinect2.py DESTINATION ${CMAKE_BINARY_DIR})
+file(GLOB EXAMPLES examples/*.py)
+file(COPY ${EXAMPLES} DESTINATION ${CMAKE_BINARY_DIR})
