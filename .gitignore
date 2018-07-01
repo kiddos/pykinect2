@@ -1,1 +1,10 @@
 build/*
+numpy.i
+test_env/*
+
+# ignore pyc
+*.pyc
+
+# ignore generated files
+kinect2.py
+kinect2_wrap.cpp
