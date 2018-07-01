@@ -77,7 +77,7 @@ class Kinect2 {
 
   FrameSize rgb_size_, ir_size_, depth_size_;
   FrameSize undistorted_size_, registered_size_;
-  bool started_;
+  bool enable_rgb_, enable_depth_, started_;
 };
 
 }  // namespace kinect2
