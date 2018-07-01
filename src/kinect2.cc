@@ -2,13 +2,16 @@
 
 namespace kinect2 {
 
-Kinect2::Kinect2(const std::string& serial, Pipeline pipeline, bool enable_rgb, bool enable_depth)
+Kinect2::Kinect2(const std::string& serial, Pipeline pipeline, bool enable_rgb,
+                 bool enable_depth)
     : device_(nullptr),
       pipeline_(nullptr),
       listener_(nullptr),
       registration_(nullptr),
       undistorted_frame_(512, 424, 4),
-      registered_frame_(512, 424, 4) {
+      registered_frame_(512, 424, 4),
+      enable_rgb_(enable_rgb),
+      enable_depth_(enable_depth) {
   // setup logger
   libfreenect2::setGlobalLogger(
       libfreenect2::createConsoleLogger(libfreenect2::Logger::Info));
@@ -139,30 +142,38 @@ void PrepareBuffer(libfreenect2::Frame* frame, int channel, FrameSize& size,
 
 bool Kinect2::NextFrame(int wait) {
   if (listener_->waitForNewFrame(frames_, wait)) {
-    libfreenect2::Frame* rgb = frames_[libfreenect2::Frame::Color];
-    libfreenect2::Frame* ir = frames_[libfreenect2::Frame::Ir];
-    libfreenect2::Frame* depth = frames_[libfreenect2::Frame::Depth];
+    libfreenect2::Frame* rgb = nullptr;
+    libfreenect2::Frame* ir = nullptr;
+    libfreenect2::Frame* depth = nullptr;
+
+    if (enable_rgb_) {
+      rgb = frames_[libfreenect2::Frame::Color];
+      PrepareBuffer(rgb, 4, rgb_size_, rgb_);
+      std::memcpy(&rgb_[0], rgb->data, rgb_.size());
+    }
+
+    if (enable_depth_) {
+      ir = frames_[libfreenect2::Frame::Ir];
+      depth = frames_[libfreenect2::Frame::Depth];
+      PrepareBuffer(ir, 1, ir_size_, ir_);
+      PrepareBuffer(depth, 1, depth_size_, depth_);
+
+      std::memcpy(&ir_[0], ir->data, ir_.size());
+      std::memcpy(&depth_[0], depth->data, depth_.size());
+    }
 
     // registration
-    if (registration_) {
+    if (registration_ && enable_rgb_ && enable_depth_) {
       registration_->apply(rgb, depth, &undistorted_frame_,
                            &registered_frame_);
       PrepareBuffer(&undistorted_frame_, 4, undistorted_size_, undistorted_);
       PrepareBuffer(&registered_frame_, 4, registered_size_, registered_);
 
-      std::memcpy(&undistorted_[0], undistorted_frame_.data, undistorted_.size());
+      std::memcpy(&undistorted_[0], undistorted_frame_.data,
+                  undistorted_.size());
       std::memcpy(&registered_[0], registered_frame_.data, registered_.size());
     }
 
-    // prepare buffer
-    PrepareBuffer(rgb, 4, rgb_size_, rgb_);
-    PrepareBuffer(ir, 1, ir_size_, ir_);
-    PrepareBuffer(depth, 1, depth_size_, depth_);
-
-    // copy data
-    std::memcpy(&rgb_[0], rgb->data, rgb_.size());
-    std::memcpy(&ir_[0], ir->data, ir_.size());
-    std::memcpy(&depth_[0], depth->data, depth_.size());
     listener_->release(frames_);
     return true;
   }
@@ -178,7 +189,7 @@ bool Kinect2::Stop() {
 
 template <typename T>
 T* CopyData(T** data, int* dim1, int* dim2, int* dim3,
-              const std::vector<T>& buffer, const FrameSize& size) {
+            const std::vector<T>& buffer, const FrameSize& size) {
   *dim1 = size.height;
   *dim2 = size.width;
   *dim3 = size.channel;
