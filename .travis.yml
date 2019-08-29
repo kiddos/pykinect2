@@ -16,6 +16,7 @@ matrix:
             - swig
             - pkg-config 
             - libturbojpeg
+            - libturbojpeg0-dev
             - libjpeg-turbo8-dev
             - mesa-common-dev
             - freeglut3-dev
