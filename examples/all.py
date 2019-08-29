@@ -4,8 +4,8 @@ import numpy as np
 
 
 def main():
-  kinect = Kinect2()
-  if kinect.IsOpened():
+  kinect = Kinect2('', Kinect2.GL)
+  if not kinect.IsOpened():
     print('no kinect2 device found')
     return
 
