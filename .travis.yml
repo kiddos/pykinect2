@@ -19,6 +19,9 @@ matrix:
             - freeglut3-dev
             - libxrandr-dev
             - libxi-dev
+            - libva-dev
+            - libva2
+            - libva-drm2
             - python3-dev
       env:
         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
@@ -32,3 +35,4 @@ script:
   - mkdir build
   - cd build
   - cmake ..
+  - make -j
