@@ -39,7 +39,7 @@ class Kinect2 {
     CPU
   };
 
-  Kinect2(const std::string& serial = "", Pipeline pipeline = GL,
+  Kinect2(const std::string& serial = "", Pipeline pipeline = CPU,
           bool enable_rgb = true, bool enable_depth = true);
   ~Kinect2();
 
