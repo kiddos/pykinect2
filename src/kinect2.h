@@ -24,18 +24,13 @@ struct FrameSize {
   int byte_size, size;
 };
 
+
 class Kinect2 {
  public:
   enum Pipeline {
-#ifdef HAS_CUDA
     CUDA,
-#endif
-#ifdef HAS_OPENCL
     CL,
-#endif
-#ifdef HAS_OPENGL
     GL,
-#endif
     CPU
   };
 

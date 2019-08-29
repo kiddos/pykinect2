@@ -71,6 +71,8 @@ bool Kinect2::SetupPipeline(Pipeline pipeline, int device_id) {
     case CPU:
       pipeline_ = new libfreenect2::CpuPacketPipeline();
       break;
+    default:
+      break;
   }
   return pipeline_ != nullptr;
 }
