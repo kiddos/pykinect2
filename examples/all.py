@@ -5,6 +5,10 @@ import numpy as np
 
 def main():
   kinect = Kinect2()
+  if kinect.IsOpened():
+    print('no kinect2 device found')
+    return
+
   while True:
     kinect.NextFrame()
     rgb = kinect.RGB()
