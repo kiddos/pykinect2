@@ -58,17 +58,19 @@ bool Kinect2::SetupPipeline(Pipeline pipeline, int device_id) {
       pipeline_ = new libfreenect2::CudaPacketPipeline(device_id);
       break;
 #endif
-    case CPU:
-      pipeline_ = new libfreenect2::CpuPacketPipeline();
-      break;
-    case GL:
-      pipeline_ = new libfreenect2::OpenGLPacketPipeline();
-      break;
 #ifdef HAS_OPENCL
     case CL:
       pipeline_ = new libfreenect2::OpenCLPacketPipeline(device_id);
       break;
 #endif
+#ifdef HAS_OPENGL
+    case GL:
+      pipeline_ = new libfreenect2::OpenGLPacketPipeline();
+      break;
+#endif
+    case CPU:
+      pipeline_ = new libfreenect2::CpuPacketPipeline();
+      break;
   }
   return pipeline_ != nullptr;
 }

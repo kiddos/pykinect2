@@ -33,8 +33,10 @@ class Kinect2 {
 #ifdef HAS_OPENCL
     CL,
 #endif
-    CPU,
-    GL
+#ifdef HAS_OPENGL
+    GL,
+#endif
+    CPU
   };
 
   Kinect2(const std::string& serial = "", Pipeline pipeline = GL,
