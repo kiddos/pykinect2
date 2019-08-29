@@ -1,35 +1,45 @@
 PyKinect2
 =========
 
+[![Build Status](https://travis-ci.org/kiddos/pykinect2.svg?branch=master)](https://travis-ci.org/kiddos/pykinect2)
+
 python wrapper for kinect2 allow easier access of kinect2
 
-## setup
+## build
 
-* install [libfreenect](https://github.com/OpenKinect/libfreenect2)
+install dependencies from libfreenect2
 
 ```shell
-git clone https://github.com/OpenKinect/libfreenect2
-cd libfreenect2
+sudo apt-get install build-essential cmake pkg-config libturbojpeg libjpeg-turbo8-dev mesa-common-dev freeglut3-dev libxrandr-dev libxi-dev
+sudo apt-get install libturbojpeg0-dev
+sudo apt-get install libusb-1.0-0-dev
+```
+
+cmake build
+
+```shell
 mkdir build
 cd build
-cmake -D CMAKE_INSTALL_PREFIX=/usr/local ..
-make
-[sudo] make install
+cmake ..
+make -j
+cd ..
 ```
 
-* install numpy
+pip install
+
 
 ```shell
-[sudo] pip install numpy
+pip install . --user
 ```
 
-* install package
+or
 
 ```shell
-[sudo] ./setup.py install
+sudo pip install .
 ```
 
-## examples
+
+## Examples
 
 examples on how to fetch rgb images and depth map from kinect2 and the
 registered frame
@@ -42,8 +52,12 @@ import numpy as np
 
 def main():
   kinect = Kinect2()
+  if kinect.IsOpened():  # check if kinect2 device is connected
+    print('no kinect2 device found')
+    return
+
   while True:
-    kinect.NextFrame()
+    kinect.NextFrame()  # grab the data from libfreenect2 frame
     rgb = kinect.RGB()
     ir = kinect.IR()
     depth = kinect.Depth()
