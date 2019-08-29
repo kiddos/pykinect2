@@ -52,7 +52,7 @@ import numpy as np
 
 def main():
   kinect = Kinect2()
-  if kinect.IsOpened():  # check if kinect2 device is connected
+  if not kinect.IsOpened():  # check if kinect2 device is connected
     print('no kinect2 device found')
     return
 
