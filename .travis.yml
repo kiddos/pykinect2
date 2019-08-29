@@ -24,12 +24,14 @@ matrix:
             - libva-dev
             - libusb-1.0-0-dev
             - python3-dev
+            - python-numpy
       env:
         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
 
 before_install:
-    - eval "${MATRIX_EVAL}"
+  - eval "${MATRIX_EVAL}"
+
 
 script:
   - cmake --version
