@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <libfreenect2/frame_listener_impl.h>
 #include <libfreenect2/logger.h>
@@ -29,9 +30,11 @@ class Kinect2 {
 #ifdef HAS_CUDA
     CUDA,
 #endif
+#ifdef HAS_OPENCL
+    CL,
+#endif
     CPU,
-    GL,
-    CL
+    GL
   };
 
   Kinect2(const std::string& serial = "", Pipeline pipeline = GL,
@@ -42,6 +45,7 @@ class Kinect2 {
   std::string GetDefaultDeviceSerial();
   bool SetupPipeline(Pipeline pipeline, int device_id = 0);
   bool OpenDevice();
+  bool IsOpened();
   bool EnableFileLogger(const std::string& filepath);
   bool SetupListener(bool enable_rgb, bool enable_depth);
   bool SetupRegistration();

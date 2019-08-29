@@ -64,9 +64,11 @@ bool Kinect2::SetupPipeline(Pipeline pipeline, int device_id) {
     case GL:
       pipeline_ = new libfreenect2::OpenGLPacketPipeline();
       break;
+#ifdef HAS_OPENCL
     case CL:
       pipeline_ = new libfreenect2::OpenCLPacketPipeline(device_id);
       break;
+#endif
   }
   return pipeline_ != nullptr;
 }
@@ -80,6 +82,11 @@ bool Kinect2::OpenDevice() {
   device_serial_ = device_->getSerialNumber();
   device_firmware_version_ = device_->getFirmwareVersion();
 
+  if (device_) return true;
+  return false;
+}
+
+bool Kinect2::IsOpened() {
   if (device_) return true;
   return false;
 }
@@ -141,6 +148,8 @@ void PrepareBuffer(libfreenect2::Frame* frame, int channel, FrameSize& size,
 }
 
 bool Kinect2::NextFrame(int wait) {
+  if (!IsOpened()) return false;
+
   if (listener_->waitForNewFrame(frames_, wait)) {
     libfreenect2::Frame* rgb = nullptr;
     libfreenect2::Frame* ir = nullptr;
